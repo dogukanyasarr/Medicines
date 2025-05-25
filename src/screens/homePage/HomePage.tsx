@@ -39,22 +39,60 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: '#f4f8fc' }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#13aff9', marginBottom: 18 }}>İlaçlar</Text>
-      <TextInput
-        placeholder="İlaç ismi ara..."
-        value={search}
-        onChangeText={setSearch}
+      <View
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 18,
+  }}
+>
+  <Text
+    style={{
+      fontSize: 22,
+      fontWeight: 'bold',
+      color: '#13aff9',
+    }}
+  >
+    İlaçlar
+  </Text>
+  <Image
+    source={require('../../assets/images/user.png')}
+    style={{ width: 36, height: 36 }}
+    resizeMode="contain"
+  />
+</View>
+      <View
         style={{
+          flexDirection: 'row',
+          alignItems: 'center',
           borderWidth: 1,
           borderRadius: 10,
-          padding: 10,
+          paddingHorizontal: 12,
           marginBottom: 20,
           borderColor: '#13aff9',
-          backgroundColor: '#fff',
-          fontSize: 16
+          backgroundColor: '#fff'
         }}
-        placeholderTextColor="#13aff9"
-      />
+      >
+        <Image
+          source={require('../../assets/images/search.png')}
+          style={{ width: 20, height: 20, marginRight: 8, tintColor: '#13aff9' }}
+          resizeMode="contain"
+        />
+        <TextInput
+          placeholder="İlaç ismi ara..."
+          value={search}
+          onChangeText={setSearch}
+          style={{
+            flex: 1,
+            fontSize: 16,
+            color: '#000',
+            paddingVertical: 8,
+          }}
+          placeholderTextColor="#13aff9"
+        />
+      </View>
+
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id.toString()}
@@ -75,28 +113,48 @@ export default function HomeScreen() {
               elevation: 4,
               borderLeftWidth: 6,
               borderLeftColor: '#13aff9',
+              justifyContent: 'space-between'
             }}
             activeOpacity={0.85}
           >
-            <Image
-              source={require('../../assets/images/meds.png')}
-              style={{ width: 40, height: 40, marginRight: 16, tintColor: '#13aff9' }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '600',
-                color: '#222',
-                flex: 1,
-                flexWrap: 'wrap',
-                maxWidth: '85%'
-              }}
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {item.productName}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+              <Image
+                source={require('../../assets/images/meds.png')}
+                style={{ width: 40, height: 40, marginRight: 16, tintColor: '#13aff9' }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '600',
+                  color: '#222',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                }}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {item.productName}
+              </Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+              <TouchableOpacity onPress={() => console.log('Add pressed')} style={{ marginLeft: 10 }}>
+                <Image
+                  source={require('../../assets/images/add.png')}
+                  style={{ width: 24, height: 24, borderRadius: 150 }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => console.log('Ellips pressed')} style={{ marginLeft: 10 }}>
+                <Image
+                  source={require('../../assets/images/remove.png')}
+                  style={{ width: 24, height: 24, borderRadius: 100 }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         )}
       />
