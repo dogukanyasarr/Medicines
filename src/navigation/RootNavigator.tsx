@@ -5,11 +5,13 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import HomeScreen from '../screens/homePage/HomePage';
 import DetailScreen from '../screens/detailPage/DetailPage';
+import FavoritePage from '../screens/favoritePage/favoritePage';
 import { Drug } from '../types/drugs';
 
 export type RootStackParamList = {
   'İlaçlar': undefined;
   'İlaç Detayı': { drug: Drug };
+  'Favoriler': undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -20,6 +22,7 @@ export default function RootNavigator() {
       <Stack.Navigator>
         <Stack.Screen name="İlaçlar" component={HomeScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="İlaç Detayı" component={DetailScreen} />
+        <Stack.Screen name="Favoriler" component={FavoritePage} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
