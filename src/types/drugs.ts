@@ -1,9 +1,12 @@
 export interface Drug {
-  id: string;
-  productName: string;
+  id: number;
   barcode: string;
-  activeSubstance: string;
+  productName: string;
+  activeIngredient: string;
   atcCode: string;
   company: string;
   licenseDate: string;
+  licenseNumber: string;
+  suspended: boolean;
+  changeDate: string;
 }

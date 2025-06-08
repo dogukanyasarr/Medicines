@@ -22,7 +22,7 @@ export default function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="İlaçlar" component={HomeScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="İlaç Detayı" component={DetailScreen} />
+        <Stack.Screen name="İlaç Detayı" component={DetailScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Favoriler" component={FavoritePage} options={{ headerShown: false }}/>
         <Stack.Screen name="Profil" component={ProfilePage} options={{ headerShown: false }}/>
       </Stack.Navigator>

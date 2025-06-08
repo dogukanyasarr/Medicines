@@ -5,6 +5,7 @@ import { Drug } from '../../types/drugs';
 import { getFavoriteDrugs, removeFavoriteDrug } from '../../services/storage';
 import { NavigationProp } from '../homePage/type';
 import { styles } from './style';
+import Header from '../../components/header/header';
 
 export default function FavoritePage() {
   const navigation = useNavigation<NavigationProp>();
@@ -28,7 +29,7 @@ export default function FavoritePage() {
 
   const handleRemoveFavorite = async (drug: Drug) => {
     try {
-      await removeFavoriteDrug(drug.id);
+      await removeFavoriteDrug(drug.id.toString());
       setFavoriteDrugs(prev => prev.filter(item => item.id !== drug.id));
     } catch (error) {
       console.error('Favori silme hatası:', error);
@@ -45,21 +46,10 @@ export default function FavoritePage() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
-          <Image
-            source={require('../../assets/images/back.png')}
-            style={styles.backIcon}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Favorilerim</Text>
-        <Image
-          source={require('../../assets/images/user.png')}
-          style={styles.userIcon}
-          resizeMode="contain"
-        />
-      </View>
+      <Header
+        text="Favorilerim"
+        onPress={handleGoBack}
+      />
 
       {favoriteDrugs.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -68,7 +58,7 @@ export default function FavoritePage() {
       ) : (
         <FlatList
           data={favoriteDrugs}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate('İlaç Detayı', { drug: item })}

@@ -1,26 +1,46 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types/navigation';
-
+import { View, Text, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { styles } from './style';
+import { DetailRouteProp } from './type';
 import ChatBoxPlaceholder from '../../components/ChatboxPlaceholder';
-
-type DetailRouteProp = RouteProp<RootStackParamList, 'İlaç Detayı'>;
+import Header from '../../components/header/header';
+import { useRoute } from '@react-navigation/native';
 
 export default function DetailScreen() {
   const { params } = useRoute<DetailRouteProp>();
+  const navigation = useNavigation();
   const { drug } = params;
 
-  return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{drug.name}</Text>
-      <Text style={{ marginVertical: 5 }}>Etken Madde: {drug.activeSubstance}</Text>
-      <Text style={{ marginVertical: 5 }}>Firma: {drug.company}</Text>
-      <Text style={{ marginVertical: 5 }}>ATC Kodu: {drug.atcCode}</Text>
-      <Text style={{ marginVertical: 5 }}>Ruhsat Tarihi: {drug.licenseDate}</Text>
-      <Text style={{ marginVertical: 5 }}>Barkod: {drug.barcode}</Text>
+  const Row = ({ label, value }: { label: string; value: string }) => (
+    <View style={styles.rowContainer}>
+      <View style={styles.labelBg}><Text style={styles.labelText}>{label}</Text></View>
+      <View style={styles.valueBg}><Text style={styles.valueText}>{value}</Text></View>
+    </View>
+  );
 
-      <ChatBoxPlaceholder />
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#f4f8fc', padding:10}}>
+      <Header 
+        text="İlaç Detayı" 
+        onPress={handleGoBack}
+      />
+      <ScrollView style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.productName}>{drug.productName}</Text>
+          <Row label="Etken Madde:" value={drug.activeIngredient} />
+          <Row label="Firma:" value={drug.company} />
+          <Row label="ATC Kodu:" value={drug.atcCode} />
+          <Row label="Ruhsat Tarihi:" value={drug.licenseDate.split(' ')[0]} />
+          <Row label="Barkod:" value={drug.barcode} />
+          <Row label="Ruhsat No:" value={drug.licenseNumber} />
+          <ChatBoxPlaceholder />
+        </View>
+      </ScrollView>
     </View>
   );
 }
