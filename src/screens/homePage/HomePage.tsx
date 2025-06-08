@@ -5,19 +5,24 @@ import { Drug } from '../../types/drugs';
 import { getDrugs } from '../../services/WebApi';
 import { NavigationProp } from './type';
 import { styles } from './style';
+import { addFavoriteDrug, removeFavoriteDrug, getFavoriteDrugs } from '../../services/storage';
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const [search, setSearch] = useState('');
   const [drugs, setDrugs] = useState<Drug[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteDrugs, setFavoriteDrugs] = useState<Drug[]>([]);
 
   useEffect(() => {
-    const fetchDrugs = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getDrugs();
-        setDrugs(data);
+        const [drugsData, favoritesData] = await Promise.all([
+          getDrugs(),
+          getFavoriteDrugs()
+        ]);
+        setDrugs(drugsData);
+        setFavoriteDrugs(favoritesData);
       } catch (error) {
         console.error('API Hatası:', error);
       } finally {
@@ -25,7 +30,7 @@ export default function HomeScreen() {
       }
     };
 
-    fetchDrugs();
+    fetchData();
   }, []);
 
   const filtered = drugs.filter(drug =>
@@ -34,6 +39,32 @@ export default function HomeScreen() {
 
   const handleFavoritePress = () => {
     navigation.navigate('Favoriler');
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate('Profil');
+  };
+
+  const handleAddToFavorites = async (drug: Drug) => {
+    try {
+      await addFavoriteDrug(drug);
+      setFavoriteDrugs(prev => [...prev, drug]);
+    } catch (error) {
+      console.error('Favori ekleme hatası:', error);
+    }
+  };
+
+  const handleRemoveFromFavorites = async (drug: Drug) => {
+    try {
+      await removeFavoriteDrug(drug.id);
+      setFavoriteDrugs(prev => prev.filter(item => item.id !== drug.id));
+    } catch (error) {
+      console.error('Favori silme hatası:', error);
+    }
+  };
+
+  const isFavorite = (drugId: string) => {
+    return favoriteDrugs.some(drug => drug.id === drugId);
   };
 
   if (loading) {
@@ -60,11 +91,13 @@ export default function HomeScreen() {
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <Image
-            source={require('../../assets/images/user.png')}
-            style={styles.userImage}
-            resizeMode="contain"
-          />
+          <TouchableOpacity onPress={handleProfilePress}>
+            <Image
+              source={require('../../assets/images/user.png')}
+              style={styles.userImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.searchContainer}>
@@ -107,21 +140,29 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.actionButtonsContainer}>
-              <TouchableOpacity onPress={() => console.log('Add pressed')} style={styles.actionButton}>
-                <Image
-                  source={require('../../assets/images/add.png')}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => console.log('Ellips pressed')} style={styles.actionButton}>
-                <Image
-                  source={require('../../assets/images/remove.png')}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
+              {!isFavorite(item.id) ? (
+                <TouchableOpacity 
+                  onPress={() => handleAddToFavorites(item)} 
+                  style={styles.actionButton}
+                >
+                  <Image
+                    source={require('../../assets/images/add.png')}
+                    style={styles.actionIcon}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                  onPress={() => handleRemoveFromFavorites(item)} 
+                  style={styles.actionButton}
+                >
+                  <Image
+                    source={require('../../assets/images/remove.png')}
+                    style={styles.actionIcon}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           </TouchableOpacity>
         )}
