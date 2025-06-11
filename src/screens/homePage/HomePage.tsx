@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, FlatList, TouchableOpacity, Text, ActivityIndicator, Image } from 'react-native';
+import { View, TextInput, FlatList, TouchableOpacity, Text, ActivityIndicator, Image, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Drug } from '../../types/drugs';
 import { getDrugs } from '../../services/WebApi';
@@ -68,105 +68,120 @@ export default function HomeScreen() {
   };
 
   if (loading) {
-    return <ActivityIndicator style={styles.loadingContainer} size="large" />;
+    return (
+      <ImageBackground
+        source={require('../../assets/images/homebg.png')}
+        style={styles.backgroundImage}
+      >
+        <ActivityIndicator style={styles.loadingContainer} size="large" color="#13aff9" />
+      </ImageBackground>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerTitle}>İlaçlar</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <TouchableOpacity 
-            style={styles.favoriteButton}
-            onPress={handleFavoritePress}
-            activeOpacity={0.7}
-          >
-            <Image
-              source={require('../../assets/images/favorite.png')}
-              style={[
-                styles.favoriteIcon
-              ]}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleProfilePress}>
-            <Image
-              source={require('../../assets/images/user.png')}
-              style={styles.userImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.searchContainer}>
-        <Image
-          source={require('../../assets/images/search.png')}
-          style={styles.searchIcon}
-          resizeMode="contain"
-        />
-        <TextInput
-          placeholder="İlaç ismi ara..."
-          value={search}
-          onChangeText={setSearch}
-          style={styles.searchInput}
-          placeholderTextColor="#13aff9"
-        />
-      </View>
-
-      <FlatList
-        data={filtered}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('İlaç Detayı', { drug: item })}
-            style={styles.drugItemContainer}
-            activeOpacity={0.85}
-          >
-            <View style={styles.drugItemContent}>
+    <ImageBackground
+      source={require('../../assets/images/homebg.png')}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerLeft}>
+            <Text style={[styles.headerTitle, { color: '#fff' }]}>İlaçlar</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity 
+              style={[styles.favoriteButton, { backgroundColor: 'rgba(255, 255, 255, 0.2)' }]}
+              onPress={handleFavoritePress}
+              activeOpacity={0.7}
+            >
               <Image
-                source={require('../../assets/images/meds.png')}
-                style={styles.drugIcon}
+                source={require('../../assets/images/favorite.png')}
+                style={[styles.favoriteIcon, { tintColor: '#fff' }]}
                 resizeMode="contain"
               />
-              <Text
-                style={styles.drugName}
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {item.productName}
-              </Text>
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.profileButton, { backgroundColor: 'rgba(255, 255, 255, 0.2)' }]}
+              onPress={handleProfilePress}
+            >
+              <Image
+                source={require('../../assets/images/user.png')}
+                style={[styles.userImage, { tintColor: '#fff' }]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-            <View style={styles.actionButtonsContainer}>
-              {!isFavorite(item.id) ? (
-                <TouchableOpacity 
-                  onPress={() => handleAddToFavorites(item)} 
-                  style={styles.actionButton}
+        <View style={[styles.searchContainer, { backgroundColor: 'rgba(255, 255, 255, 0.9)' }]}>
+          <Image
+            source={require('../../assets/images/search.png')}
+            style={[styles.searchIcon, { tintColor: '#13aff9' }]}
+            resizeMode="contain"
+          />
+          <TextInput
+            placeholder="İlaç ismi ara..."
+            value={search}
+            onChangeText={setSearch}
+            style={[styles.searchInput, { color: '#000' }]}
+            placeholderTextColor="#13aff9"
+          />
+        </View>
+
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('İlaç Detayı', { drug: item })}
+              style={[styles.drugItemContainer, { backgroundColor: 'rgba(255, 255, 255, 0.9)' }]}
+              activeOpacity={0.85}
+            >
+              <View style={styles.drugItemContent}>
+                <Image
+                  source={require('../../assets/images/meds.png')}
+                  style={[styles.drugIcon, { tintColor: '#13aff9' }]}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={[styles.drugName, { color: '#000' }]}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
                 >
-                  <Image
-                    source={require('../../assets/images/add.png')}
-                    style={styles.actionIcon}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity 
-                  onPress={() => handleRemoveFromFavorites(item)} 
-                  style={styles.actionButton}
-                >
-                  <Image
-                    source={require('../../assets/images/remove.png')}
-                    style={styles.actionIcon}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+                  {item.productName}
+                </Text>
+              </View>
+
+              <View style={styles.actionButtonsContainer}>
+                {!isFavorite(item.id.toString()) ? (
+                  <TouchableOpacity 
+                    onPress={() => handleAddToFavorites(item)} 
+                    style={[styles.actionButton, { backgroundColor: 'rgba(19, 175, 249, 0.1)' }]}
+                  >
+                    <Image
+                      source={require('../../assets/images/add.png')}
+                      style={[styles.actionIcon, { tintColor: '#13aff9' }]}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity 
+                    onPress={() => handleRemoveFromFavorites(item)} 
+                    style={[styles.actionButton, { backgroundColor: 'rgba(255, 59, 48, 0.1)' }]}
+                  >
+                    <Image
+                      source={require('../../assets/images/remove.png')}
+                      style={[styles.actionIcon, { tintColor: '#ff3b30' }]}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
+    </ImageBackground>
   );
 }

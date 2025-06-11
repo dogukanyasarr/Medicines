@@ -1,7 +1,11 @@
 import React from 'react';
 import { Text, ImageBackground, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/RootNavigator';
 
 const WelcomePage = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     return (
         <ImageBackground
             source={require('../../assets/images/welcomebg.png')}
@@ -13,7 +17,7 @@ const WelcomePage = () => {
                 <Text style={styles.subtitle}>
                     Dijital ilaç asistanınız ile tedavinizi daha düzenli ve güvenli yönetin.
                 </Text>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.buttonText}>Get Started</Text>
                 </TouchableOpacity>
             </View>

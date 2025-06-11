@@ -1,5 +1,5 @@
 export interface Drug {
-  id: number;
+  id: string;
   barcode: string;
   productName: string;
   activeIngredient: string;
