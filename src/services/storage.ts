@@ -21,7 +21,7 @@ export const addFavoriteDrug = async (drug: Drug): Promise<void> => {
 
 export const removeFavoriteDrug = async (id: string): Promise<void> => {
   const current = await getFavoriteDrugs();
-  const updated = current.filter(item => item.id !== id);
+  const updated = current.filter(item => item.id.toString() !== id);
   await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updated));
 };
 

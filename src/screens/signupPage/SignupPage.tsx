@@ -80,7 +80,7 @@ export default function SignupPage() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Kayıt Ol</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('İlaçlar')}>
           <Text style={styles.secondaryButtonText}>Giriş Yap</Text>
         </TouchableOpacity>
       </View>

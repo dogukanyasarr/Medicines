@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { getFavoriteDrugs } from '../../services/storage';
 
 type MenuItemProps = {
   icon: any;
@@ -8,6 +10,24 @@ type MenuItemProps = {
 };
 
 const ProfilePage = () => {
+  const [favoritesCount, setFavoritesCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchFavoritesCount = async () => {
+        try {
+          const favorites = await getFavoriteDrugs();
+          setFavoritesCount(favorites.length);
+        } catch (error) {
+          console.error('Favori sayısı alınırken hata:', error);
+          setFavoritesCount(0);
+        }
+      };
+
+      fetchFavoritesCount();
+    }, [])
+  );
+
   return (
     <ImageBackground
       source={require('../../assets/images/homebg.png')}
@@ -26,20 +46,33 @@ const ProfilePage = () => {
           <Text style={styles.email}>dogukan@example.com</Text>
         </View>
 
-        {/* Stats */}
+        {/* Shortcuts */}
         <View style={styles.statsContainer}>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>24</Text>
-            <Text style={styles.statLabel}>Posts</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>120</Text>
-            <Text style={styles.statLabel}>Followers</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>305</Text>
-            <Text style={styles.statLabel}>Following</Text>
-          </View>
+          <TouchableOpacity style={styles.shortcutBox}>
+            <View style={styles.shortcutCircleWrapper}>
+              <View style={styles.shortcutCircle}>
+                <Image
+                  source={require('../../assets/images/meds.png')}
+                  style={styles.shortcutIcon}
+                />
+              </View>
+            </View>
+            <Text style={styles.shortcutLabel}>Reçetem</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.shortcutBox}>
+            <View style={styles.shortcutCircleWrapper}>
+              <View style={styles.shortcutCircle}>
+                <Text style={styles.shortcutCountText}>{favoritesCount}</Text>
+              </View>
+              <View style={styles.badgeContainer}>
+                <Image
+                  source={require('../../assets/images/favorite.png')}
+                  style={styles.badgeIcon}
+                />
+              </View>
+            </View>
+            <Text style={styles.shortcutLabel}>Favorilerim</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Menu */}
@@ -74,10 +107,7 @@ const MenuItem = ({ icon, label, color = '#222' }: MenuItemProps) => (
   <TouchableOpacity style={styles.menuItem}>
     <Image source={icon} style={[styles.menuIcon, { tintColor: color }]} />
     <Text style={[styles.menuLabel, { color }]}>{label}</Text>
-    <Image 
-      source={require('../../assets/images/next.png')} 
-      style={[styles.menuArrow, { tintColor: color }]} 
-    />
+    <View style={[styles.menuDot, { backgroundColor: color }]} />
   </TouchableOpacity>
 );
 
@@ -127,73 +157,92 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 16,
     marginBottom: 32,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    justifyContent: 'space-around',
   },
-  statBox: {
+  shortcutBox: {
     alignItems: 'center',
-    marginHorizontal: 16,
   },
-  statNumber: {
-    fontSize: 22,
+  shortcutCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.75)',
+  },
+  shortcutIcon: {
+    width: 40,
+    height: 40,
+    tintColor: '#fff',
+  },
+  shortcutCircleWrapper: {
+    marginBottom: 10,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    right: -6,
+    bottom: -6,
+    backgroundColor: 'white',
+    borderRadius: 17,
+    width: 34,
+    height: 34,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  badgeIcon: {
+    width: 18,
+    height: 18,
+    tintColor: '#13aff9',
+  },
+  shortcutCountText: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#13aff9',
+    color: '#fff',
   },
-  statLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 2,
+  shortcutLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
   },
   menuContainer: {
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 16,
-    paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
+    padding: 22,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   menuIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 16,
+    width: 32,
+    height: 32,
+    marginRight: 20,
     resizeMode: 'contain',
   },
   menuLabel: {
-    fontSize: 17,
+    fontSize: 20,
     flex: 1,
     fontWeight: '500',
   },
-  menuArrow: {
-    width: 20,
-    height: 20,
-    marginLeft: 8,
-    resizeMode: 'contain',
+  menuDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
 });
 

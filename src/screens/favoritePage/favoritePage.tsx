@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator, ImageBackground, SafeAreaView } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Drug } from '../../types/drugs';
 import { getFavoriteDrugs, removeFavoriteDrug } from '../../services/storage';
 import { NavigationProp } from '../homePage/type';
 import { styles } from './style';
-import Header from '../../components/header/header';
 
 export default function FavoritePage() {
   const navigation = useNavigation<NavigationProp>();
   const [favoriteDrugs, setFavoriteDrugs] = useState<Drug[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadFavorites();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadFavorites();
+    }, [])
+  );
 
   const loadFavorites = async () => {
     try {
+      setLoading(true);
       const favorites = await getFavoriteDrugs();
       setFavoriteDrugs(favorites);
     } catch (error) {
@@ -40,60 +42,83 @@ export default function FavoritePage() {
     navigation.goBack();
   };
 
-  if (loading) {
-    return <ActivityIndicator style={styles.loadingContainer} size="large" />;
-  }
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#13aff9" />
+        </View>
+      );
+    }
 
-  return (
-    <View style={styles.container}>
-      <Header
-        text="Favorilerim"
-        onPress={handleGoBack}
-      />
-
-      {favoriteDrugs.length === 0 ? (
+    if (favoriteDrugs.length === 0) {
+      return (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Henüz favori ilacınız bulunmamaktadır.</Text>
         </View>
-      ) : (
-        <FlatList
-          data={favoriteDrugs}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('İlaç Detayı', { drug: item })}
-              style={styles.drugItemContainer}
-              activeOpacity={0.85}
-            >
-              <View style={styles.drugItemContent}>
-                <Image
-                  source={require('../../assets/images/meds.png')}
-                  style={styles.drugIcon}
-                  resizeMode="contain"
-                />
-                <Text
-                  style={styles.drugName}
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                >
-                  {item.productName}
-                </Text>
-              </View>
+      );
+    }
 
-              <TouchableOpacity
-                onPress={() => handleRemoveFavorite(item)}
-                style={styles.removeButton}
+    return (
+      <FlatList
+        data={favoriteDrugs}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.contentContainer}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('İlaç Detayı', { drug: item })}
+            style={styles.drugItemContainer}
+            activeOpacity={0.85}
+          >
+            <View style={styles.drugItemContent}>
+              <Image
+                source={require('../../assets/images/meds.png')}
+                style={styles.drugIcon}
+                resizeMode="contain"
+              />
+              <Text
+                style={styles.drugName}
+                numberOfLines={2}
+                ellipsizeMode="tail"
               >
-                <Image
-                  source={require('../../assets/images/remove.png')}
-                  style={styles.removeIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
+                {item.productName}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => handleRemoveFavorite(item)}
+              style={styles.removeButton}
+            >
+              <Image
+                source={require('../../assets/images/heart.png')}
+                style={styles.removeIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
-          )}
-        />
-      )}
-    </View>
+          </TouchableOpacity>
+        )}
+      />
+    );
+  };
+
+  return (
+    <ImageBackground
+      source={require('../../assets/images/favoritebg.png')}
+      style={styles.backgroundImage}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+            <Image
+              source={require('../../assets/images/back.png')}
+              style={styles.backIcon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Favorilerim</Text>
+          <View style={styles.headerRightPlaceholder} />
+        </View>
+        {renderContent()}
+      </SafeAreaView>
+    </ImageBackground>
   );
 }

@@ -156,10 +156,11 @@ export default function HomeScreen() {
                 {!isFavorite(item.id.toString()) ? (
                   <TouchableOpacity 
                     onPress={() => handleAddToFavorites(item)} 
-                    style={[styles.actionButton, { backgroundColor: 'rgba(19, 175, 249, 0.1)' }]}
+                    style={[styles.actionButton, { backgroundColor: 'rgba(19, 175, 249, 0.1)', padding: 8,
+                      borderRadius: 100, }]}
                   >
                     <Image
-                      source={require('../../assets/images/add.png')}
+                      source={require('../../assets/images/heart.png')}
                       style={[styles.actionIcon, { tintColor: '#13aff9' }]}
                       resizeMode="contain"
                     />

@@ -1,56 +1,80 @@
 import { StyleSheet } from 'react-native';
 
-export const LABEL_BG = '#d0e6fa';
-export const LABEL_BORDER = '#5a9bd8';
-export const VALUE_BG = '#f0e6ff';
-export const VALUE_BORDER = '#b48ee6';
-
 export const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f4f8fc',
   },
   content: {
     padding: 16,
   },
+  productNameContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+  },
   productName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#222',
-    marginBottom: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
     textAlign: 'center',
   },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 12,
   },
-  labelBg: {
-    backgroundColor: LABEL_BG,
-    borderRadius: 100,
-    borderWidth: 1.5,
-    borderColor: LABEL_BORDER,
-    paddingVertical: 7,
+  infoChip: {
+    paddingVertical: 8,
     paddingHorizontal: 12,
-    marginRight: 6,
-    minWidth: 90,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   labelText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#2561a7',
-  },
-  valueBg: {
-    backgroundColor: VALUE_BG,
-    borderRadius: 100,
-    borderWidth: 1.5,
-    borderColor: VALUE_BORDER,
-    paddingVertical: 7,
-    paddingHorizontal: 12,
-    flex: 1,
+    color: '#fff',
   },
   valueText: {
-    fontSize: 14,
-    color: '#5a3a7a',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 20,
+  },
+  backButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 12,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#fff',
+  },
+  headerTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerRightPlaceholder: {
+    width: 44,
+  },
+  chatboxContainer: {
+    flex: 1,
+    marginTop: 20,
+  }
 });
