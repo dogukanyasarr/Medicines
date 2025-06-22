@@ -3,11 +3,30 @@ import { View, Text, ImageBackground, StyleSheet, TextInput, TouchableOpacity } 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/RootNavigator';
+import { login } from '../../services/WebApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    setError('');
+    try {
+      const user = await login(email, password);
+      const userToStore = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePhoto: user.profilePhoto,
+      };
+      await AsyncStorage.setItem('user', JSON.stringify(userToStore));
+      navigation.navigate('Profil');
+    } catch (e) {
+      setError('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+    }
+  };
 
   return (
     <ImageBackground
@@ -34,9 +53,10 @@ const LoginPage = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Giriş Yap</Text>
         </TouchableOpacity>
+        {error ? <Text style={{ color: 'red', marginTop: 8 }}>{error}</Text> : null}
         <View style={styles.linksRow}>
           <TouchableOpacity style={styles.linkButton}>
             <Text style={styles.linkText}>Şifremi unuttum?</Text>

@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { styles } from './style';
 import { DetailRouteProp } from './type';
-import ChatBoxPlaceholder from '../../components/ChatboxPlaceholder';
+import ChatBox, { Message } from '../../components/ChatboxPlaceholder';
+import { askQuestion } from '../../services/WebApi';
 
 const VIBRANT_COLORS = [
   '#1abc9c', '#2ecc71', '#9b59b6', '#f1c40f', 
@@ -16,6 +17,22 @@ export default function DetailScreen() {
   const { params } = useRoute<DetailRouteProp>();
   const navigation = useNavigation();
   const { drug } = params;
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async (question: string) => {
+    setMessages(prev => [...prev, { sender: 'user', text: question }]);
+    setLoading(true);
+    try {
+      const answer = await askQuestion(question);
+      setMessages(prev => [...prev, { sender: 'bot', text: answer }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { sender: 'bot', text: 'Bir hata oluştu. Lütfen tekrar deneyin.' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const Row = ({ label, value }: { label: string; value: string }) => {
     const rowColor = useMemo(() => getRandomColor(), []);
@@ -69,7 +86,11 @@ export default function DetailScreen() {
           <Row label="Ruhsat No:" value={drug.licenseNumber} />
 
           <View style={styles.chatboxContainer}>
-            <ChatBoxPlaceholder />
+            <ChatBox
+              messages={messages}
+              onSend={handleSend}
+              loading={loading}
+            />
           </View>
         </ScrollView>
       </View>

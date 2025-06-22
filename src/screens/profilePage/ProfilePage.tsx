@@ -1,16 +1,22 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getFavoriteDrugs } from '../../services/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/RootNavigator';
 
 type MenuItemProps = {
   icon: any;
   label: string;
   color?: string;
+  onPress?: () => void;
 };
 
 const ProfilePage = () => {
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [user, setUser] = useState<{ firstName: string; lastName: string; profilePhoto: string; email?: string } | null>(null);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useFocusEffect(
     useCallback(() => {
@@ -24,7 +30,19 @@ const ProfilePage = () => {
         }
       };
 
+      const fetchUser = async () => {
+        try {
+          const userStr = await AsyncStorage.getItem('user');
+          if (userStr) {
+            setUser(JSON.parse(userStr));
+          }
+        } catch (e) {
+          setUser(null);
+        }
+      };
+
       fetchFavoritesCount();
+      fetchUser();
     }, [])
   );
 
@@ -37,13 +55,21 @@ const ProfilePage = () => {
         {/* Avatar */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatarWrapper}>
-            <Image
-              source={require('../../assets/images/user.png')}
-              style={[styles.avatar, { tintColor: '#fff' }]}
-            />
+            {user?.profilePhoto ? (
+              <Image
+                source={{ uri: user.profilePhoto }}
+                style={styles.avatar}
+                resizeMode="cover"
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/user.png')}
+                style={[styles.avatar, { tintColor: '#fff' }]}
+              />
+            )}
           </View>
-          <Text style={styles.name}>Doğukan</Text>
-          <Text style={styles.email}>dogukan@example.com</Text>
+          <Text style={styles.name}>{user ? `${user.firstName} ${user.lastName}` : 'Kullanıcı'}</Text>
+          {user?.email && <Text style={styles.email}>{user.email}</Text>}
         </View>
 
         {/* Shortcuts */}
@@ -78,6 +104,12 @@ const ProfilePage = () => {
         {/* Menu */}
         <View style={styles.menuContainer}>
           <MenuItem 
+            icon={require('../../assets/images/homebg.png')} 
+            label="Anasayfa" 
+            color="#13aff9"
+            onPress={() => navigation.navigate('İlaçlar')}
+          />
+          <MenuItem 
             icon={require('../../assets/images/favorite.png')} 
             label="Favorilerim" 
             color="#13aff9"
@@ -95,7 +127,11 @@ const ProfilePage = () => {
           <MenuItem 
             icon={require('../../assets/images/user.png')} 
             label="Log out" 
-            color="#ff3b30" 
+            color="#ff3b30"
+            onPress={async () => {
+              await AsyncStorage.removeItem('user');
+              navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+            }}
           />
         </View>
       </View>
@@ -103,8 +139,8 @@ const ProfilePage = () => {
   );
 };
 
-const MenuItem = ({ icon, label, color = '#222' }: MenuItemProps) => (
-  <TouchableOpacity style={styles.menuItem}>
+const MenuItem = ({ icon, label, color = '#222', onPress }: MenuItemProps & { onPress?: () => void }) => (
+  <TouchableOpacity style={styles.menuItem} onPress={onPress}>
     <Image source={icon} style={[styles.menuIcon, { tintColor: color }]} />
     <Text style={[styles.menuLabel, { color }]}>{label}</Text>
     <View style={[styles.menuDot, { backgroundColor: color }]} />
@@ -127,20 +163,21 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatarWrapper: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    overflow: 'hidden',
   },
   avatar: {
-    width: 48,
-    height: 48,
-    resizeMode: 'contain',
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
   },
   name: {
     fontSize: 28,
@@ -215,34 +252,35 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 16,
-    padding: 22,
-    marginBottom: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowRadius: 2.5,
+    elevation: 2,
   },
   menuIcon: {
-    width: 32,
-    height: 32,
-    marginRight: 20,
+    width: 28,
+    height: 28,
+    marginRight: 16,
     resizeMode: 'contain',
   },
   menuLabel: {
-    fontSize: 20,
+    fontSize: 17,
     flex: 1,
     fontWeight: '500',
   },
   menuDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
 });
 
