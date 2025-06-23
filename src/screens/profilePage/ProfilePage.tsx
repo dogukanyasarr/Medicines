@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
         {/* Shortcuts */}
         <View style={styles.statsContainer}>
-          <TouchableOpacity style={styles.shortcutBox}>
+          <TouchableOpacity style={styles.shortcutBox} onPress={() => navigation.navigate('PrescriptionPage')}>
             <View style={styles.shortcutCircleWrapper}>
               <View style={styles.shortcutCircle}>
                 <Image

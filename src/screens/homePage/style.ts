@@ -107,6 +107,7 @@ export const styles = StyleSheet.create({
   actionIcon: {
     width: 20,
     height: 20,
+    
   },
   loadingContainer: {
     flex: 1,

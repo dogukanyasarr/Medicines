@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/RootNavigator';
@@ -64,6 +64,27 @@ const LoginPage = () => {
           <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.linkText}>Kayıt ol</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.socialContainer}>
+          <Text style={styles.socialLabel}>Sosyal Medya Araçlarında Devam Et</Text>
+          <View style={styles.socialDivider} />
+          <View style={styles.socialRow}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => Alert.alert('yakında hizmete açılacak')}
+            >
+              <Image source={require('../../assets/images/google.png')} style={styles.socialIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => Alert.alert('yakında hizmete açılacak')}
+            >
+              <Image
+                source={require('../../assets/images/edevlet.jpg')}
+                style={[styles.socialIcon, { backgroundColor: 'transparent' }]}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </ImageBackground>
@@ -139,6 +160,54 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     fontWeight: '600',
+  },
+  socialContainer: {
+    alignItems: 'center',
+    marginTop: 18,
+    marginBottom: 8,
+  },
+  socialLabel: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center',
+    letterSpacing: 0.1,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 24,
+  },
+  socialButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: 'rgba(255,255,255,1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.13,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  socialIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    resizeMode: 'cover',
+    overflow: 'hidden',
+  },
+  socialDivider: {
+    width: 320,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    borderRadius: 1,
+    marginTop: 2,
+    marginBottom: 16,
+    alignSelf: 'center',
   },
 });
 

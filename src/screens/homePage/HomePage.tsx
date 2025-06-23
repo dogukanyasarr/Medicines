@@ -168,11 +168,12 @@ export default function HomeScreen() {
                 ) : (
                   <TouchableOpacity 
                     onPress={() => handleRemoveFromFavorites(item)} 
-                    style={[styles.actionButton, { backgroundColor: 'rgba(255, 59, 48, 0.1)' }]}
+                    style={[styles.actionButton, { backgroundColor: 'rgba(255, 59, 48, 0.1)',
+                      borderRadius: 100,  padding: 8}]}
                   >
                     <Image
-                      source={require('../../assets/images/remove.png')}
-                      style={[styles.actionIcon, { tintColor: '#ff3b30' }]}
+                      source={require('../../assets/images/heart.png')}
+                      style={[styles.actionIcon, { tintColor: '#ff3b30'}]}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>

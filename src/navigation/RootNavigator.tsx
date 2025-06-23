@@ -9,6 +9,7 @@ import ProfilePage from '../screens/profilePage/ProfilePage';
 import WelcomePage from '../screens/welcomePage/WelcomePage';
 import LoginPage from '../screens/loginPage/LoginPage';
 import SignupPage from '../screens/signupPage/SignupPage';
+import PrescriptionPage from '../screens/prescriptionPage/PrescriptionPage';
 import { Drug } from '../types/drugs';
 
 export type RootStackParamList = {
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   'İlaç Detayı': { drug: Drug };
   'Favoriler': undefined;
   'Profil': undefined;
+  'PrescriptionPage': undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -34,6 +36,7 @@ export default function RootNavigator() {
         <Stack.Screen name="İlaç Detayı" component={DetailScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Favoriler" component={FavoritePage} options={{ headerShown: false }}/>
         <Stack.Screen name="Profil" component={ProfilePage} options={{ headerShown: false }}/>
+        <Stack.Screen name="PrescriptionPage" component={PrescriptionPage} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

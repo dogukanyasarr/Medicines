@@ -83,6 +83,29 @@ export default function SignupPage() {
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('İlaçlar')}>
           <Text style={styles.secondaryButtonText}>Giriş Yap</Text>
         </TouchableOpacity>
+
+        {/* Sosyal medya ile devam et bölümü */}
+        <View style={styles.socialContainer}>
+          <View style={styles.orRow}>
+            <View style={styles.orDivider} />
+            <Text style={styles.orText}>veya</Text>
+            <View style={styles.orDivider} />
+          </View>
+          <View style={styles.socialRow}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => Alert.alert('yakında hizmete açılacak')}
+            >
+              <Image source={require('../../assets/images/google.png')} style={styles.socialIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => Alert.alert('yakında hizmete açılacak')}
+            >
+              <Image source={require('../../assets/images/edevlet.jpg')} style={styles.socialIcon} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -191,5 +214,59 @@ const styles = StyleSheet.create({
     color: '#156ee2',
     fontSize: 15,
     fontWeight: '700',
+  },
+  socialContainer: {
+    alignItems: 'center',
+    marginTop: 18,
+    marginBottom: 8,
+  },
+  orRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    width: 320,
+    alignSelf: 'center',
+  },
+  orDivider: {
+    flex: 1,
+    height: 2,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    borderRadius: 1,
+  },
+  orText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+    marginHorizontal: 12,
+    textAlign: 'center',
+    letterSpacing: 0.1,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 24,
+    marginBottom: 8,
+  },
+  socialButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: 'rgba(255,255,255,1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.13,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  socialIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    resizeMode: 'cover',
+    overflow: 'hidden',
   },
 });
