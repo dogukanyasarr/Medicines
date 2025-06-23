@@ -390,14 +390,14 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     position: 'absolute',
-    right: 10,
-    bottom: 10,
+    right: 0,
+    bottom: 3,
     padding: 8,
   },
   deleteIcon: {
     width: 20,
     height: 20,
-    tintColor: '#fff',
+    tintColor: '#13aff9',
   },
   suggestionsBox: {
     backgroundColor: '#fff',

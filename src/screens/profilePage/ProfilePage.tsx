@@ -104,7 +104,7 @@ const ProfilePage = () => {
         {/* Menu */}
         <View style={styles.menuContainer}>
           <MenuItem 
-            icon={require('../../assets/images/homebg.png')} 
+            icon={require('../../assets/images/meds.png')} 
             label="Anasayfa" 
             color="#13aff9"
             onPress={() => navigation.navigate('İlaçlar')}
@@ -113,14 +113,15 @@ const ProfilePage = () => {
             icon={require('../../assets/images/favorite.png')} 
             label="Favorilerim" 
             color="#13aff9"
+            onPress={() => navigation.navigate('Favoriler')}
           />
           <MenuItem 
-            icon={require('../../assets/images/user.png')} 
+            icon={require('../../assets/images/favorite.png')} 
             label="Settings" 
             color="#13aff9"
           />
           <MenuItem 
-            icon={require('../../assets/images/user.png')} 
+            icon={require('../../assets/images/favorite.png')} 
             label="AI Asistanı" 
             color="#13aff9"
           />
