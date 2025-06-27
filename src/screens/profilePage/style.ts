@@ -1,0 +1,172 @@
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+    paddingTop: 40,
+    paddingHorizontal: 16,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatarWrapper: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    overflow: 'hidden',
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
+  },
+  name: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  email: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 2,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    marginBottom: 32,
+    justifyContent: 'space-around',
+  },
+  shortcutBox: {
+    alignItems: 'center',
+  },
+  shortcutCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.75)',
+  },
+  shortcutIcon: {
+    width: 40,
+    height: 40,
+    tintColor: '#fff',
+  },
+  shortcutCircleWrapper: {
+    marginBottom: 10,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    right: -6,
+    bottom: -6,
+    backgroundColor: 'white',
+    borderRadius: 17,
+    width: 34,
+    height: 34,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  badgeIcon: {
+    width: 18,
+    height: 18,
+    tintColor: '#13aff9',
+  },
+  shortcutCountText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  shortcutLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  menuContainer: {
+    width: '100%',
+    alignSelf:'center'
+  },
+  menuRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  menuSquare: {
+    flex: 1,
+    aspectRatio: 1.1,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+  },
+  menuSquareIcon: {
+    width: 50,
+    height: 50,
+    marginBottom: 8,
+    tintColor: '#13aff9',
+  },
+  menuSquareLabel: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#13aff9',
+    textAlign: 'center',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2.5,
+    elevation: 2,
+  },
+  menuIcon: {
+    width: 28,
+    height: 28,
+    marginRight: 16,
+    resizeMode: 'contain',
+  },
+  menuLabel: {
+    fontSize: 17,
+    flex: 1,
+    fontWeight: '500',
+  },
+  menuDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+});
+
+export default styles;

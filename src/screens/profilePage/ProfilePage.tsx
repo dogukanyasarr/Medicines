@@ -1,20 +1,16 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getFavoriteDrugs } from '../../services/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/RootNavigator';
-
-type MenuItemProps = {
-  icon: any;
-  label: string;
-  color?: string;
-  onPress?: () => void;
-};
+import styles from './style';
+import { MenuItemProps } from './type';
 
 const ProfilePage = () => {
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [prescriptionsCount, setPrescriptionsCount] = useState(0);
   const [user, setUser] = useState<{ firstName: string; lastName: string; profilePhoto: string; email?: string } | null>(null);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -41,8 +37,23 @@ const ProfilePage = () => {
         }
       };
 
+      const fetchPrescriptionsCount = async () => {
+        try {
+          const prescriptionsStr = await AsyncStorage.getItem('PRESCRIPTIONS');
+          if (prescriptionsStr) {
+            const prescriptions = JSON.parse(prescriptionsStr);
+            setPrescriptionsCount(Array.isArray(prescriptions) ? prescriptions.length : 0);
+          } else {
+            setPrescriptionsCount(0);
+          }
+        } catch (e) {
+          setPrescriptionsCount(0);
+        }
+      };
+
       fetchFavoritesCount();
       fetchUser();
+      fetchPrescriptionsCount();
     }, [])
   );
 
@@ -77,9 +88,12 @@ const ProfilePage = () => {
           <TouchableOpacity style={styles.shortcutBox} onPress={() => navigation.navigate('PrescriptionPage')}>
             <View style={styles.shortcutCircleWrapper}>
               <View style={styles.shortcutCircle}>
+                <Text style={styles.shortcutCountText}>{prescriptionsCount}</Text>
+              </View>
+              <View style={styles.badgeContainer}>
                 <Image
                   source={require('../../assets/images/meds.png')}
-                  style={styles.shortcutIcon}
+                  style={styles.badgeIcon}
                 />
               </View>
             </View>
@@ -103,28 +117,26 @@ const ProfilePage = () => {
 
         {/* Menu */}
         <View style={styles.menuContainer}>
-          <MenuItem 
-            icon={require('../../assets/images/meds.png')} 
-            label="Anasayfa" 
-            color="#13aff9"
-            onPress={() => navigation.navigate('İlaçlar')}
-          />
-          <MenuItem 
-            icon={require('../../assets/images/favorite.png')} 
-            label="Favorilerim" 
-            color="#13aff9"
-            onPress={() => navigation.navigate('Favoriler')}
-          />
-          <MenuItem 
-            icon={require('../../assets/images/favorite.png')} 
-            label="Settings" 
-            color="#13aff9"
-          />
-          <MenuItem 
-            icon={require('../../assets/images/favorite.png')} 
-            label="AI Asistanı" 
-            color="#13aff9"
-          />
+          <View style={styles.menuRow}>
+            <TouchableOpacity style={styles.menuSquare} onPress={() => navigation.navigate('İlaçlar')}>
+              <Image source={require('../../assets/images/home.png')} style={styles.menuSquareIcon} />
+              <Text style={styles.menuSquareLabel}>Anasayfa</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuSquare} onPress={() => navigation.navigate('Favoriler')}>
+              <Image source={require('../../assets/images/heart.png')} style={styles.menuSquareIcon} />
+              <Text style={styles.menuSquareLabel}>Favorilerim</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.menuRow}>
+            <TouchableOpacity style={styles.menuSquare}>
+              <Image source={require('../../assets/images/setting.png')} style={styles.menuSquareIcon} />
+              <Text style={styles.menuSquareLabel}>Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuSquare}>
+              <Image source={require('../../assets/images/ai.png')} style={styles.menuSquareIcon} />
+              <Text style={styles.menuSquareLabel}>AI Asistanı</Text>
+            </TouchableOpacity>
+          </View>
           <MenuItem 
             icon={require('../../assets/images/user.png')} 
             label="Log out" 
@@ -147,142 +159,5 @@ const MenuItem = ({ icon, label, color = '#222', onPress }: MenuItemProps & { on
     <View style={[styles.menuDot, { backgroundColor: color }]} />
   </TouchableOpacity>
 );
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flex: 1,
-    paddingTop: 40,
-    paddingHorizontal: 16,
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  avatarWrapper: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    overflow: 'hidden',
-  },
-  avatar: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 60,
-  },
-  name: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  email: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginTop: 2,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    marginBottom: 32,
-    justifyContent: 'space-around',
-  },
-  shortcutBox: {
-    alignItems: 'center',
-  },
-  shortcutCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.75)',
-  },
-  shortcutIcon: {
-    width: 40,
-    height: 40,
-    tintColor: '#fff',
-  },
-  shortcutCircleWrapper: {
-    marginBottom: 10,
-  },
-  badgeContainer: {
-    position: 'absolute',
-    right: -6,
-    bottom: -6,
-    backgroundColor: 'white',
-    borderRadius: 17,
-    width: 34,
-    height: 34,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  badgeIcon: {
-    width: 18,
-    height: 18,
-    tintColor: '#13aff9',
-  },
-  shortcutCountText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  shortcutLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  menuContainer: {
-    width: '100%',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2.5,
-    elevation: 2,
-  },
-  menuIcon: {
-    width: 28,
-    height: 28,
-    marginRight: 16,
-    resizeMode: 'contain',
-  },
-  menuLabel: {
-    fontSize: 17,
-    flex: 1,
-    fontWeight: '500',
-  },
-  menuDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-});
 
 export default ProfilePage;

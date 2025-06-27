@@ -1,13 +1,16 @@
-import { View, Text, TouchableOpacity, Image, ImageBackground, StyleSheet, SafeAreaView, Modal, TextInput, Platform, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ImageBackground, SafeAreaView, Modal, TextInput, Platform, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/RootNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDrugs } from '../../services/WebApi';
+import styles from './style';
 
 const PRESCRIPTIONS_KEY = 'PRESCRIPTIONS';
 
 const PrescriptionPage = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const handleGoBack = () => navigation.goBack();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,22 +97,35 @@ const PrescriptionPage = () => {
   const renderCard = ({ item }: { item: any }) => (
     <View style={styles.card}> 
       <View style={styles.cardHeaderRow}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardDate}>{item.date}</Text>
+        <View style={styles.cardTitleRow}>
+          <Image source={require('../../assets/images/drugs.png')} style={styles.cardTitleIcon} />
+          <Text style={styles.cardTitle}>{item.title}</Text>
+        </View>
+        <View style={styles.cardDateRow}>
+          <Image source={require('../../assets/images/calendar.png')} style={styles.cardDateIcon} />
+          <Text style={styles.cardDate}>{item.date}</Text>
+        </View>
       </View>
       <View style={styles.cardDivider} />
       <Text style={styles.cardText} numberOfLines={4}>{item.text}</Text>
       {item.drugs && item.drugs.length > 0 && (
         <View style={styles.selectedDrugsRow}>
           {item.drugs.map((drug: any) => (
-            <View key={drug.id} style={styles.drugTag}>
-              <Text style={styles.drugTagText}>{drug.productName}</Text>
+            <View key={drug.id} style={styles.drugTagRow}>
+              <View style={styles.drugTagIconBg}>
+                <Image source={require('../../assets/images/meds.png')} style={styles.drugTagIcon} />
+              </View>
+              <TouchableOpacity style={styles.drugTag} onPress={() => navigation.navigate('İlaç Detayı', { drug })}>
+                <Text style={styles.drugTagText} numberOfLines={2} ellipsizeMode="tail">{drug.productName}</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
       )}
       <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
-        <Image source={require('../../assets/images/trash.png')} style={styles.deleteIcon} />
+        <View style={styles.deleteIconBg}>
+          <Image source={require('../../assets/images/trash.png')} style={styles.deleteIcon} />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -214,244 +230,5 @@ const PrescriptionPage = () => {
     </ImageBackground>
   )
 }
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flex: 1,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    paddingTop: 20,
-  },
-  backButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 10,
-    borderRadius: 12,
-  },
-  backIcon: {
-    width: 24,
-    height: 24,
-    tintColor: '#fff',
-  },
-  headerTitle: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerRightPlaceholder: {
-    width: 44,
-  },
-  fab: {
-    position: 'absolute',
-    right: 28,
-    bottom: 36,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#13aff9',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  fabIcon: {
-    width: 36,
-    height: 36,
-    resizeMode: 'contain',
-    tintColor: '#13aff9',
-  },
-  cardsContainer: {
-    padding: 16,
-    paddingBottom: 120,
-    gap: 16,
-  },
-  card: {
-    flex: 1,
-    minHeight: 160,
-    margin: 8,
-    borderRadius: 18,
-    padding: 16,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.10,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#222',
-    flex: 1,
-    textAlign: 'left',
-  },
-  cardDate: {
-    fontSize: 14,
-    color: '#222',
-    fontWeight: 'bold',
-    textAlign: 'right',
-    marginLeft: 12,
-  },
-  cardText: {
-    fontSize: 15,
-    color: '#333',
-    flex: 1,
-  },
-  emptyText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 40,
-    opacity: 0.7,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '85%',
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 24,
-    alignItems: 'stretch',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#13aff9',
-    marginBottom: 18,
-    textAlign: 'center',
-  },
-  modalLabel: {
-    fontSize: 15,
-    color: '#333',
-    marginBottom: 4,
-    marginTop: 10,
-  },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: '#e3e3e3',
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 15,
-    color: '#222',
-    backgroundColor: '#f7f7f7',
-    marginBottom: 8,
-  },
-  modalTextarea: {
-    minHeight: 70,
-    textAlignVertical: 'top',
-  },
-  modalButtonRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
-    gap: 10,
-  },
-  modalButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-    backgroundColor: '#eee',
-    marginLeft: 8,
-  },
-  modalButtonText: {
-    fontWeight: 'bold',
-    color: '#13aff9',
-    fontSize: 15,
-  },
-  deleteButton: {
-    position: 'absolute',
-    right: 0,
-    bottom: 3,
-    padding: 8,
-  },
-  deleteIcon: {
-    width: 20,
-    height: 20,
-    tintColor: '#13aff9',
-  },
-  suggestionsBox: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e3e3e3',
-    marginBottom: 8,
-    maxHeight: 140,
-    overflow: 'hidden',
-  },
-  suggestionItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  suggestionText: {
-    color: '#13aff9',
-    fontSize: 15,
-  },
-  selectedDrugsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 8,
-  },
-  drugTag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#e6f3fa',
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginRight: 4,
-    marginBottom: 4,
-  },
-  drugTagText: {
-    color: '#13aff9',
-    fontSize: 14,
-    marginRight: 4,
-  },
-  removeDrugText: {
-    color: '#13aff9',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 2,
-    marginTop: -2,
-  },
-  cardDivider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#e3e3e3',
-    marginBottom: 8,
-  },
-});
 
 export default PrescriptionPage
